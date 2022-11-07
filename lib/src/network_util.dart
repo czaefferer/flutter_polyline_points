@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:google_api_headers/google_api_headers.dart';
 import 'package:http/http.dart' as http;
 
 import '../src/PointLatLng.dart';
@@ -45,9 +46,11 @@ class NetworkUtil {
     Uri uri =
         Uri.https("maps.googleapis.com", "maps/api/directions/json", params);
 
+    String url = uri.toString();
+    final headers = await GoogleApiHeaders().getHeaders();
     // print('GOOGLE MAPS URL: ' + url);
-    var response = await http.get(uri);
-    if (response.statusCode == 200) {
+    var response = await http.get(url, headers: headers);
+    if (response?.statusCode == 200) {
       var parsedJson = json.decode(response.body);
       result.status = parsedJson["status"];
       if (parsedJson["status"]?.toLowerCase() == STATUS_OK &&
